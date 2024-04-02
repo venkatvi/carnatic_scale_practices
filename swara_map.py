@@ -1,23 +1,7 @@
 """ TODO: Add more documentation and CLI parameterization of new scales""" 
 from typing import Dict, List
-SARALI_VARISAIS = [
-	["srgmpdnS", "Sndpmgrs"], 
-	["srsrsrgm", "srgmpdnS", "SnSnSndp", "Sndpmgrs"], 
-	["srgsrgsr", "srgmpdnS", "SndSndSn", "Sndpmgrs"], 
-	["srgmsrgm", "srgmpdnS", "SndpSndp", "Sndpmgrs"], 
-	["srgmp,sr", "srgmpdnS", "Sndpm,Sn", "Sndpmgrs"], 
-	["srgmpdsr", "srgmpdnS", "SndpmgSn", "Sndpmgrs"], 
-	["srgmpdn,", "srgmpdnS", "Sndpmgr,", "Sndpmgrs"],
-	["srgmpmgr", "srgmpdnS", "Sndpmpdn", "Sndpmgrs"],
-	["srgmpmdp", "srgmpdnS", "Sndpmpgm", "Sndpmgrs"], 
-	["srgmp,gm", "p,,,p,,,", "gmpdndpm", "gmpgmgrs"], 
-	["S,ndn,dp", "d,pmp,p,", "gmpdndpm", "gmpgmgrs"],
-	["SSndnndp", "ddpmp,p,", "gmpdndpm", "gmpgmgrs"],
-	["srgrg,gm", "pmp,dpd,", "mpdpdndp", "mpdpmgrs"],
-	["srgmp,p,", "ddp,mmp,", "dnS,Sndp", "Sndpmgrs"],
-]
-COMMA_POSITION = 1000
-THALA_BREAK = 4
+from ragams import DEFAULT, SUDDHA_SAVERI
+from varisais import SARALI_VARISAIS, DHATTU_VARISAIS, THALA_BREAK, COMMA_POSITION
 def get_swara_to_position_map(scale: List[str]) -> Dict[str, int]: 
 	#assert(len(scale) == 2, "scale should have strictly 2 strings")
 	aarohanam = scale[0]
@@ -85,9 +69,20 @@ def convert_to_different_scale(
 	return decoded_varisais
 
 if __name__ == "__main__": 
-	decoded_varisais = convert_to_different_scale(["srgmpdnS", "Sndpmgrs"], ["srgpdSRG", "GRSdpgrs"], SARALI_VARISAIS, "sarali_varisai")
+	varisais = DHATTU_VARISAIS
+	conversion_name = "dhattu varisais"
+	decoded_varisais = convert_to_different_scale(DEFAULT, SUDDHA_SAVERI, varisais, conversion_name)
 	for idx, varisai_lines in enumerate(decoded_varisais): 
 		print(f"Lesson {idx+1}\n")
-		for line in varisai_lines: 
-			print(line[:THALA_BREAK] + "|" +  line[THALA_BREAK :] + "||\n")
+		for line in varisai_lines:
+			start = 0
+			end = 0
+			modified_line = "" 
+			for thala in THALA_BREAK: 
+				end = end + thala
+				modified_line += line[start:end] 
+				modified_line += "|" 
+				start = end
+			modified_line += "|"
+			print(modified_line + "\n")
 		print("---------------------------------")
